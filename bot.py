@@ -73,8 +73,8 @@ async def start(bot: Client, cmd: Message):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("🙏 Join Update", url="https://t.me/TGTech4U"),
-                        InlineKeyboardButton("🤝 Help Us", url="https://t.me/Gaurav4x")
+                        InlineKeyboardButton("🙏 Join Update", url="https://t.me/BotMinister"),
+                        InlineKeyboardButton("🤝 Help Us", url="https://t.me/BotCreator99")
                     ],
                     [
                         InlineKeyboardButton("🤗About Bot", callback_data="aboutbot"),
