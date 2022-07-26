@@ -21,7 +21,7 @@ class Config(object):
 	ABOUT_BOT_TEXT = f"""
 👑 **My Name :- ** [FileStore4UBot](https://t.me/{BOT_USERNAME})
 🧑🏻‍💻 **Developer :- ** @Developer4x
-🙏 **Updates Join :- ** [TGTech4U](https://t.me/TGTech4U)
+🙏 **Updates Join :- ** [BotMinister](https://t.me/BotMinister)
 """
 	
 	HOME_TEXT = """
