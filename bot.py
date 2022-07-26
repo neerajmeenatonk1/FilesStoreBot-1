@@ -40,8 +40,7 @@ from handlers.save_media import (
 MediaList = {}
 
 Bot = Client(
-    name=Config.BOT_USERNAME,
-    in_memory=True,
+    Config.BOT_USERNAME,
     bot_token=Config.BOT_TOKEN,
     api_id=Config.API_ID,
     api_hash=Config.API_HASH
@@ -69,16 +68,17 @@ async def start(bot: Client, cmd: Message):
         await add_user_to_database(bot, cmd)
         await cmd.reply_text(
             Config.HOME_TEXT.format(cmd.from_user.first_name, cmd.from_user.id),
+            parse_mode="Markdown",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("Support Group", url="https://t.me/JoinOT"),
-                        InlineKeyboardButton("Bots Channel", url="https://t.me/Discovery_Updates")
+                        InlineKeyboardButton("🙏 Join Update", url="https://t.me/TGTech4U"),
+                        InlineKeyboardButton("🤝 Help Us", url="https://t.me/Gaurav4x")
                     ],
                     [
-                        InlineKeyboardButton("About Bot", callback_data="aboutbot"),
-                        InlineKeyboardButton("About Dev", callback_data="aboutdevs")
+                        InlineKeyboardButton("🤗About Bot", callback_data="aboutbot"),
+                        InlineKeyboardButton("🙅‍♂️ Close", callback_data="closeMessage")
                     ]
                 ]
             )
@@ -96,6 +96,7 @@ async def start(bot: Client, cmd: Message):
                 _response_msg = await cmd.reply_text(
                     text=f"**Total Files:** `{len(message_ids)}`",
                     quote=True,
+                    parse_mode="Markdown",
                     disable_web_page_preview=True
                 )
             else:
@@ -106,7 +107,7 @@ async def start(bot: Client, cmd: Message):
             await cmd.reply_text(f"Something went wrong!\n\n**Error:** `{err}`")
 
 
-@Bot.on_message((filters.document | filters.video | filters.audio) & ~filters.chat(Config.DB_CHANNEL))
+@Bot.on_message((filters.document | filters.video | filters.audio) & ~filters.edited & ~filters.chat(Config.DB_CHANNEL))
 async def main(bot: Client, message: Message):
 
     if message.chat.type == "private":
@@ -129,8 +130,8 @@ async def main(bot: Client, message: Message):
         await message.reply_text(
             text="**Choose an option from below:**",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Save in Batch", callback_data="addToBatchTrue")],
-                [InlineKeyboardButton("Get Sharable Link", callback_data="addToBatchFalse")]
+                [InlineKeyboardButton("🗃️ Save in Batch", callback_data="addToBatchTrue")],
+                [InlineKeyboardButton("🔗 Get Sharable Link", callback_data="addToBatchFalse")]
             ]),
             quote=True,
             disable_web_page_preview=True
@@ -147,7 +148,7 @@ async def main(bot: Client, message: Message):
         try:
             forwarded_msg = await message.forward(Config.DB_CHANNEL)
             file_er_id = str(forwarded_msg.message_id)
-            share_link = f"https://t.me/{Config.BOT_USERNAME}?start=AbirHasan2005_{str_to_b64(file_er_id)}"
+            share_link = f"https://t.me/{Config.BOT_USERNAME}?start=tgtech4u_{str_to_b64(file_er_id)}"
             CH_edit = await bot.edit_message_reply_markup(message.chat.id, message.message_id,
                                                           reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(
                                                               "Get Sharable Link", url=share_link)]]))
@@ -159,10 +160,11 @@ async def main(bot: Client, message: Message):
                 await forwarded_msg.reply_text(
                     f"#CHANNEL_BUTTON:\n\n[{message.chat.title}](https://t.me/c/{private_ch}/{CH_edit.message_id}) Channel's Broadcasted File's Button Added!")
         except FloodWait as sl:
-            await asyncio.sleep(sl.value)
+            await asyncio.sleep(sl.x)
             await bot.send_message(
                 chat_id=int(Config.LOG_CHANNEL),
-                text=f"#FloodWait:\nGot FloodWait of `{str(sl.value)}s` from `{str(message.chat.id)}` !!",
+                text=f"#FloodWait:\nGot FloodWait of `{str(sl.x)}s` from `{str(message.chat.id)}` !!",
+                parse_mode="Markdown",
                 disable_web_page_preview=True
             )
         except Exception as err:
@@ -170,6 +172,7 @@ async def main(bot: Client, message: Message):
             await bot.send_message(
                 chat_id=int(Config.LOG_CHANNEL),
                 text=f"#ERROR_TRACEBACK:\nGot Error from `{str(message.chat.id)}` !!\n\n**Traceback:** `{err}`",
+                parse_mode="Markdown",
                 disable_web_page_preview=True
             )
 
@@ -183,7 +186,8 @@ async def broadcast_handler_open(_, m: Message):
 async def sts(_, m: Message):
     total_users = await db.total_users_count()
     await m.reply_text(
-        text=f"**Total Users in DB:** `{total_users}`",
+        text=f"**🎯 Total Users in DB:** `{total_users}`",
+        parse_mode="Markdown",
         quote=True
     )
 
@@ -299,7 +303,7 @@ async def _banned_users(_, m: Message):
 @Bot.on_message(filters.private & filters.command("clear_batch"))
 async def clear_user_batch(bot: Client, m: Message):
     MediaList[f"{str(m.from_user.id)}"] = []
-    await m.reply_text("Cleared your batch files successfully!")
+    await m.reply_text("⚔️ Cleared your batch files successfully!")
 
 
 @Bot.on_callback_query()
@@ -309,16 +313,14 @@ async def button(bot: Client, cmd: CallbackQuery):
     if "aboutbot" in cb_data:
         await cmd.message.edit(
             Config.ABOUT_BOT_TEXT,
+            parse_mode="Markdown",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
+        
                     [
-                        InlineKeyboardButton("Source Codes of Bot",
-                                             url="https://github.com/AbirHasan2005/PyroFilesStoreBot")
-                    ],
-                    [
-                        InlineKeyboardButton("Go Home", callback_data="gotohome"),
-                        InlineKeyboardButton("About Dev", callback_data="aboutdevs")
+                        InlineKeyboardButton("🗃️ Go Home", callback_data="gotohome"),
+                        InlineKeyboardButton("🙅‍♂️ Close", callback_data="closeMessage")
                     ]
                 ]
             )
@@ -327,34 +329,26 @@ async def button(bot: Client, cmd: CallbackQuery):
     elif "aboutdevs" in cb_data:
         await cmd.message.edit(
             Config.ABOUT_DEV_TEXT,
+            parse_mode="Markdown",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton("Source Codes of Bot",
-                                             url="https://github.com/AbirHasan2005/PyroFilesStoreBot")
-                    ],
-                    [
-                        InlineKeyboardButton("About Bot", callback_data="aboutbot"),
-                        InlineKeyboardButton("Go Home", callback_data="gotohome")
+             [
+                        InlineKeyboardButton("🤔 About Bot", callback_data="aboutbot"),
+                        InlineKeyboardButton("🗃️ Go Home", callback_data="gotohome")
                     ]
-                ]
             )
         )
 
     elif "gotohome" in cb_data:
         await cmd.message.edit(
             Config.HOME_TEXT.format(cmd.message.chat.first_name, cmd.message.chat.id),
+            parse_mode="Markdown",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("Support Group", url="https://t.me/JoinOT"),
-                        InlineKeyboardButton("Bots Channel", url="https://t.me/Discovery_Updates")
-                    ],
-                    [
-                        InlineKeyboardButton("About Bot", callback_data="aboutbot"),
-                        InlineKeyboardButton("About Dev", callback_data="aboutdevs")
+                        InlineKeyboardButton("🙏 Join Update", url="https://t.me/TGTech4U"),
+                        InlineKeyboardButton("🤔 About Bot", callback_data="aboutbot")
                     ]
                 ]
             )
@@ -371,6 +365,7 @@ async def button(bot: Client, cmd: CallbackQuery):
                 if user.status == "kicked":
                     await cmd.message.edit(
                         text="Sorry Sir, You are Banned to use me. Contact my [Support Group](https://t.me/JoinOT).",
+                        parse_mode="markdown",
                         disable_web_page_preview=True
                     )
                     return
@@ -388,27 +383,26 @@ async def button(bot: Client, cmd: CallbackQuery):
                                 InlineKeyboardButton("🔄 Refresh 🔄", callback_data="refreshmeh")
                             ]
                         ]
-                    )
+                    ),
+                    parse_mode="markdown"
                 )
                 return
             except Exception:
                 await cmd.message.edit(
                     text="Something went Wrong. Contact my [Support Group](https://t.me/JoinOT).",
+                    parse_mode="markdown",
                     disable_web_page_preview=True
                 )
                 return
         await cmd.message.edit(
             text=Config.HOME_TEXT.format(cmd.message.chat.first_name, cmd.message.chat.id),
+            parse_mode="Markdown",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("Support Group", url="https://t.me/JoinOT"),
-                        InlineKeyboardButton("Bots Channel", url="https://t.me/Discovery_Updates")
-                    ],
-                    [
-                        InlineKeyboardButton("About Bot", callback_data="aboutbot"),
-                        InlineKeyboardButton("About Dev", callback_data="aboutdevs")
+                        InlineKeyboardButton("🙏 Join Update", url="https://t.me/TGTech4U"),
+                        InlineKeyboardButton("🤔 About Bot", callback_data="aboutbot")
                     ]
                 ]
             )
@@ -436,8 +430,8 @@ async def button(bot: Client, cmd: CallbackQuery):
         await cmd.message.edit("File Saved in Batch!\n\n"
                                "Press below button to get batch link.",
                                reply_markup=InlineKeyboardMarkup([
-                                   [InlineKeyboardButton("Get Batch Link", callback_data="getBatchLink")],
-                                   [InlineKeyboardButton("Close Message", callback_data="closeMessage")]
+                                   [InlineKeyboardButton("🔗 Get Batch Link", callback_data="getBatchLink")],
+                                   [InlineKeyboardButton("🙅‍♂️ Close Message", callback_data="closeMessage")]
                                ]))
 
     elif "addToBatchFalse" in cb_data:
@@ -446,9 +440,9 @@ async def button(bot: Client, cmd: CallbackQuery):
     elif "getBatchLink" in cb_data:
         message_ids = MediaList.get(f"{str(cmd.from_user.id)}", None)
         if message_ids is None:
-            await cmd.answer("Batch List Empty!", show_alert=True)
+            await cmd.answer("😞 Batch List Empty!", show_alert=True)
             return
-        await cmd.message.edit("Please wait, generating batch link ...")
+        await cmd.message.edit("⏳ Please wait Generating batch link!")
         await save_batch_media_in_channel(bot=bot, editable=cmd.message, message_ids=message_ids)
         MediaList[f"{str(cmd.from_user.id)}"] = []
 
