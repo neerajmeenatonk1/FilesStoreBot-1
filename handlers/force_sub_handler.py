@@ -63,7 +63,7 @@ async def handle_force_sub(bot: Client, cmd: Message):
     except Exception:
         await bot.send_message(
             chat_id=cmd.from_user.id,
-            text="📌File to download link bot:-@FileToLink4UBot",
+            text="📌File to download link bot:-@LinkToSaveBot",
             parse_mode="markdown",
             disable_web_page_preview=True
         )
